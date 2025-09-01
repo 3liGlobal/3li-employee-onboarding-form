@@ -84,7 +84,7 @@
       position: absolute;
       left: -54px;
       right: -24px;
-      bottom: -12px;
+      bottom: -52px;
       height: 360px;
       pointer-events: none;
       background-image: url('./svgs/2nd\ SVG.svg');
@@ -94,7 +94,7 @@
     }
    
     .form-section {
-      width: 70%;
+      width: 100%;
       background: white;
       padding: 3rem 8rem;
       position: relative;
