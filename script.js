@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Validation helpers
   var requiredNames = new Set([
     'firstName', 'lastName', 'gender', 'dob', 'nationality', 'cnic',
-    'marital', 'idFile', 'phone', 'email', 'emergencyName', 'relationship', 'emergencyPhone'
+    'marital', 'idFile', 'phone', 'email', 'bankName', 'iban', 
+    'emergencyName', 'relationship', 'emergencyPhone'
   ]);
 
   function getErrorElement(field) {
@@ -80,6 +81,8 @@ document.addEventListener('DOMContentLoaded', function () {
       var emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
       isValid = emailRegex.test(value);
     }
+
+
 
     if (errorEl) errorEl.style.display = isValid ? 'none' : 'block';
     return isValid;
