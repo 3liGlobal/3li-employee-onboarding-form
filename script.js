@@ -1,48 +1,92 @@
 document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('onboardingForm');
+
+  
   var idFile = document.getElementById('idFile');
+  var idLabel = document.getElementById('idLabel');
   var idFileName = document.getElementById('idFileName');
   var idFileClear = document.getElementById('idFileClear');
-  var fileControl = idFile ? idFile.closest('.file-control') : null;
-  var filePlaceholder = idFile ? (idFile.getAttribute('placeholder') || 'Click to upload') : '';
 
-  // File control UI behavior
-  function updateFileState() {
-    if (!idFile || !idFileName) return;
-    if (idFile.files && idFile.files.length > 0) {
-      idFileName.textContent = idFile.files[0].name;
-      idFileName.style.display = 'inline-block';
-      if (fileControl) fileControl.classList.add('has-file');
-      if (idFileClear) idFileClear.style.display = 'inline-block';
-    } else {
-      idFileName.textContent = filePlaceholder;
-      idFileName.style.display = 'inline-block';
-      if (fileControl) fileControl.classList.remove('has-file');
-      if (idFileClear) idFileClear.style.display = 'none';
+  let cnicUploads = []; 
+
+  function updateCnicState() {
+    if (cnicUploads.length === 0) {
+      idLabel.textContent = "Upload CNIC/ID (Front)*";
+      idFileName.textContent = "";
+      idFileClear.style.display = "none";
+      idFile.disabled = false;
+    } else if (cnicUploads.length === 1) {
+      idLabel.textContent = "Upload CNIC/ID (Back)*";
+      idFileName.textContent = "Front: " + cnicUploads[0].name;
+      idFileClear.style.display = "inline-block";
+      idFile.disabled = false;
+    } else if (cnicUploads.length === 2) {
+      idLabel.textContent = "CNIC Uploaded";
+      idFileName.textContent =
+        "Front: " + cnicUploads[0].name + " | Back: " + cnicUploads[1].name;
+      idFileClear.style.display = "inline-block";
+      idFile.disabled = true; // lock after both
     }
   }
 
   if (idFile) {
-    idFile.addEventListener('change', function () {
-      updateFileState();
-      validateField(idFile);
+    idFile.addEventListener('change', function (e) {
+      if (e.target.files.length > 0) {
+        cnicUploads.push(e.target.files[0]);
+        idFile.value = ""; // reset input for next step
+        updateCnicState();
+      }
     });
   }
+
   if (idFileClear) {
     idFileClear.addEventListener('click', function () {
-      if (!idFile) return;
-      idFile.value = '';
-      updateFileState();
-      validateField(idFile);
+      cnicUploads = [];
+      idFile.value = "";
+      updateCnicState();
     });
   }
-  updateFileState();
 
-  // Validation helpers
+  updateCnicState();
+
+  // ===== RESUME UPLOAD =====
+  var resumeFile = document.getElementById('resumeFile');
+  var resumeFileName = document.getElementById('resumeFileName');
+  var resumeFileClear = document.getElementById('resumeFileClear');
+
+  function updateResumeState() {
+    if (resumeFile && resumeFile.files && resumeFile.files.length > 0) {
+      resumeFileName.textContent = resumeFile.files[0].name;
+      resumeFileClear.style.display = "inline-block";
+    } else {
+      resumeFileName.textContent = "";
+      resumeFileClear.style.display = "none";
+    }
+  }
+
+  if (resumeFile) {
+    resumeFile.addEventListener('change', function () {
+      updateResumeState();
+      validateField(resumeFile);
+    });
+  }
+
+  if (resumeFileClear) {
+    resumeFileClear.addEventListener('click', function () {
+      resumeFile.value = "";
+      updateResumeState();
+      validateField(resumeFile);
+    });
+  }
+
+  updateResumeState();
+
+  // ===== VALIDATION =====
   var requiredNames = new Set([
     'firstName', 'lastName', 'gender', 'dob', 'nationality', 'cnic',
-    'marital', 'idFile', 'phone', 'email', 'bankName', 'iban', 
-    'emergencyName', 'relationship', 'emergencyPhone'
+    'marital', 'phone', 'email', 'emergencyName', 'relationship', 'emergencyPhone',
+    'resumeFile' 
+    
   ]);
 
   function getErrorElement(field) {
@@ -62,7 +106,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var errorEl = getErrorElement(field);
     var isValid = true;
 
-    if (requiredNames.has(name)) {
+    //  CNIC front + back =====
+    if (field.id === "idFile") {
+      isValid = cnicUploads.length === 2; // require both
+    }
+    
+    else if (requiredNames.has(name)) {
       if (field.type === 'file') {
         isValid = field.files && field.files.length > 0;
       } else if (field.tagName === 'SELECT') {
@@ -82,8 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
       isValid = emailRegex.test(value);
     }
 
-
-
     if (errorEl) errorEl.style.display = isValid ? 'none' : 'block';
     return isValid;
   }
@@ -94,10 +141,16 @@ document.addEventListener('DOMContentLoaded', function () {
     fields.forEach(function (field) {
       if (!validateField(field)) allValid = false;
     });
+    
+    if (cnicUploads.length !== 2) {
+      var cnicError = getErrorElement(idFile);
+      if (cnicError) cnicError.style.display = 'block';
+      allValid = false;
+    }
     return allValid;
   }
 
-  // Real-time error clearing
+  
   form.addEventListener('input', function (e) {
     var target = e.target;
     if (target.matches('input[type="text"], input[type="email"], input[type="tel"], input[type="date"]')) {
@@ -111,18 +164,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Submit handler
+  
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var isValid = validateForm(form);
     if (isValid) {
       alert('Form submitted successfully!');
       form.reset();
-      // Hide all errors after reset
+      cnicUploads = [];
+      updateCnicState();
+      updateResumeState();
+     
       var errors = form.querySelectorAll('.error');
       errors.forEach(function (err) { err.style.display = 'none'; });
-      // Refresh file UI
-      setTimeout(updateFileState, 0);
     }
   });
 });
+document.querySelectorAll('input[type="file"]').forEach(input => {
+  input.setAttribute('title', '');
+});
+

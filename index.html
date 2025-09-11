@@ -7,9 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-   <script src="script.js" defer></script>
+  <script src="script.js" defer></script>
   <title>Employee Onboarding</title>
-  
 </head>
 <body>
   
@@ -21,11 +20,9 @@
     
     <div class="sidebar">
       <div class="logo">
-       
         <img src="./svgs/Logo.svg" alt="3Li Global Logo">
       </div>
 
-      
       <div class="sidebar-hero">
         <h3>Welcome To 3Li Global</h3>
         <p>
@@ -33,11 +30,7 @@
         </p>
       </div>
 
-      
-
-      <div class="sidebar-decor">
-        
-      </div>
+      <div class="sidebar-decor"></div>
     </div>
 
     <!-- Form Section -->
@@ -47,6 +40,7 @@
       
       <form id="onboardingForm" novalidate>
         <div class="form-grid">
+
           <div>
             <label>First Name*</label>
             <input type="text" name="firstName">
@@ -68,6 +62,7 @@
             </select>
             <div class="error">Gender is required</div>
           </div>
+
           <div>
             <label>Date of Birth*</label>
             <input type="date" name="dob">
@@ -80,10 +75,10 @@
               <option value="">Select</option>
               <option>Pakistani</option>
               <option>Filipino</option>
-
             </select>
             <div class="error">Nationality is required</div>
           </div>
+
           <div>
             <label>CNIC/Passport Number*</label>
             <input type="text" name="cnic">
@@ -99,14 +94,27 @@
             </select>
             <div class="error">Marital Status is required</div>
           </div>
+
+          <!-- CNIC/ID Upload with Front & Back Flow -->
           <div class="file-field">
-            <label>Upload CNIC/ID/Passport*</label>
+            <label id="idLabel">Upload CNIC/ID (Front)*</label>
             <div class="file-control">
-              <input id="idFile" type="file" name="idFile" accept=".jpg,.png,.pdf" placeholder="Click to upload CNIC/ID/Passport">
+              <input id="idFile" type="file" name="idFiles[]" accept=".jpg,.png,.pdf">
               <button type="button" class="file-clear" id="idFileClear" aria-label="Remove file"></button>
               <span class="file-name" id="idFileName"></span>
             </div>
-            <div class="error">File is required</div>
+            <div class="error">Front & Back files are required</div>
+          </div>
+
+          <!-- Resume Upload -->
+          <div class="file-field">
+            <label>Upload Resume*</label>
+            <div class="file-control">
+              <input id="resumeFile" type="file" name="resumeFile" accept=".pdf,.doc,.docx">
+              <button type="button" class="file-clear" id="resumeFileClear" aria-label="Remove file"></button>
+              <span class="file-name" id="resumeFileName"></span>
+            </div>
+            <div class="error">Resume is required</div>
           </div>
 
           <div>
@@ -114,36 +122,11 @@
             <input type="tel" name="phone">
             <div class="error">Enter valid phone number</div>
           </div>
+
           <div>
             <label>Personal Email*</label>
             <input type="email" name="email">
             <div class="error">Valid email required</div>
-          </div>
-
-          <div>
-            <label>Bank Name*</label>
-            <select name="bankName">
-              <option value="">Select</option>
-              <option>HBL (Habib Bank Limited)</option>
-              <option>UBL (United Bank Limited)</option>
-              <option>NBP (National Bank of Pakistan)</option>
-              <option>MCB (Muslim Commercial Bank)</option>
-              <option>ABL (Allied Bank Limited)</option>
-              <option>Standard Chartered Bank</option>
-              <option>Faysal Bank</option>
-              <option>Bank Alfalah</option>
-              <option>Askari Bank</option>
-              <option>Meezan Bank</option>
-              <option>JS Bank</option>
-              <option>Soneri Bank</option>
-              <option>Other</option>
-            </select>
-            <div class="error">Bank Name is required</div>
-          </div>
-          <div>
-            <label>IBAN Number*</label>
-            <input type="text" name="iban" placeholder="PK36SCBL0000001123456702">
-            <div class="error">IBAN Number is required</div>
           </div>
 
           <div>
@@ -163,13 +146,13 @@
             </select>
             <div class="error">Relationship required</div>
           </div>
+
           <div>
             <label>Emergency Contact Number*</label>
             <input type="tel" name="emergencyPhone">
             <div class="error">Enter valid emergency number</div>
           </div>
 
-         
         </div>
 
         <div class="form-footer">
@@ -178,7 +161,6 @@
       </form>
     </div>
   </div>
-
 
 </body>
 </html>
