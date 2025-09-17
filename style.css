@@ -457,3 +457,6 @@ input[type="file"]::-webkit-file-upload-button,
 input[type="file"] {
   -webkit-appearance: none;
 }
+#page2{
+  display: none;
+}
